@@ -2,7 +2,6 @@ package com.jonathanxu.hacklodge
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.activity_post_editor.*
 import android.util.Log
 import android.view.View

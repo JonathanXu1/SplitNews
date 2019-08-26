@@ -40,8 +40,4 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    // Markwon dependencies
-    implementation  "io.noties.markwon:core:4.1.0"
-    implementation  "io.noties.markwon:ext-strikethrough:4.1.0"
-    implementation  "io.noties.markwon:image:4.1.0"
 }
