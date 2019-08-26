@@ -18,4 +18,6 @@
     <string name="post_save">Save</string>
     <string name="post_location">Location</string>
     <string name="post_title">Title</string>
+    <string name="placeholder">placeholder</string>
+    <string name="scan_direct">SCAN</string>
 </resources>
