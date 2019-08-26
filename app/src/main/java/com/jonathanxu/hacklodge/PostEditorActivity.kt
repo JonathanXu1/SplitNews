@@ -2,7 +2,7 @@ package com.jonathanxu.hacklodge
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-//import io.noties.markwon.Markwon
+import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.activity_post_editor.*
 import android.util.Log
 import android.view.View
@@ -42,8 +42,8 @@ class PostEditorActivity : AppCompatActivity() {
 
         button_save_file.setOnClickListener { view -> savePost(view) }
         // obtain an instance of Markwon
-        //val markwon = Markwon.create(this)
+        val markwon = Markwon.create(this)
         // set markdown
-        //markwon.setMarkdown(editorTextView, "**Hello there!**");
+        markwon.setMarkdown(editorTextView, "**Hello there!**");
     }
 }
