@@ -27,29 +27,19 @@
         app:layout_constraintTop_toBottomOf="@+id/et_title"
         />
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="Article Content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_location" />
-
-    <TextView
-        android:id="@+id/editorTextView"
+    <com.onegravity.rteditor.RTEditText
+        android:id="@+id/rtEditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Text View"
+        android:gravity="top"
+        android:hint="Text View"
+        android:imeOptions="actionDone|flagNoEnterAction"
+        android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
         app:layout_constraintBottom_toTopOf="@+id/button_save_file"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/et_location" />
 
     <Button
         android:id="@+id/button_save_file"

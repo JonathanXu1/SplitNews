@@ -34,6 +34,10 @@ class PostEditorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // set theme before calling setContentView!
+        setTheme(R.style.RTE_ThemeLight)
+
         setContentView(R.layout.activity_post_editor)
         title = "Post an Article"
 
