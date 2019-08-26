@@ -40,9 +40,6 @@ class PostEditorActivity : AppCompatActivity() {
         //Todo: Add back button
 
         button_save_file.setOnClickListener { view -> savePost(view) }
-        // obtain an instance of Markwon
-        val markwon = Markwon.create(this)
-        // set markdown
-        markwon.setMarkdown(editorTextView, "**Hello there!**");
+
     }
 }

@@ -36,6 +36,10 @@
         <activity android:name=".PostEditorActivity"
             android:label="@string/title_activity_new">
         </activity>
+        <activity
+            android:name="com.onegravity.rteditor.media.choose.MediaChooserActivity"/>
+        <activity
+            android:name="com.onegravity.rteditor.media.crop.CropImageActivity"/>
     </application>
 
 </manifest>
