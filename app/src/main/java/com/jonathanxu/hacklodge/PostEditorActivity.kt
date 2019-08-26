@@ -6,7 +6,8 @@ import androidx.core.app.ComponentActivity
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
+import io.noties.markwon.Markwon
+import kotlinx.android.synthetic.main.activity_post_editor.*
 
 
 class PostEditorActivity : AppCompatActivity() {
@@ -18,5 +19,9 @@ class PostEditorActivity : AppCompatActivity() {
 
         //Todo: Add back button
 
+        // obtain an instance of Markwon
+        val markwon = Markwon.create(this)
+        // set markdown
+        markwon.setMarkdown(editorTextView, "**Hello there!**");
     }
 }
