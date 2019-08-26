@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ems="15"
-        android:hint="Title"
+        android:hint="@string/post_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,18 +22,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="15"
-        android:hint="Location"
+        android:hint="@string/post_location"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_title" />
+        app:layout_constraintTop_toBottomOf="@+id/et_title"
+        />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_save_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#009688"
         android:foregroundTint="#FFFFFF"
-        android:text="Post"
+        android:text="@string/post_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
