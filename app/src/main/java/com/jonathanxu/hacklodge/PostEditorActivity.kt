@@ -2,14 +2,22 @@ package com.jonathanxu.hacklodge
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
+import android.util.Log
+import android.view.View
+import kotlinx.android.synthetic.main.activity_post_editor.*
+import java.io.File
 
 
 class PostEditorActivity : AppCompatActivity() {
+
+    private fun savePost(view: View) {
+        // Save the post by writing to file
+        Log.d("SAVE", "Writing file to private storage")
+        // Todo post name
+        val file = File(filesDir, "post_hard.md")
+        file.writeText("This a file")
+        Log.d("SAVE", "File written to ${file.absolutePath}")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,5 +26,6 @@ class PostEditorActivity : AppCompatActivity() {
 
         //Todo: Add back button
 
+        button_save_file.setOnClickListener { view -> savePost(view)}
     }
 }
