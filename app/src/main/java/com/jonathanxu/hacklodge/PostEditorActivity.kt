@@ -12,12 +12,10 @@ import com.onegravity.rteditor.RTManager
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.api.RTApi
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import android.view.ViewGroup
+import com.onegravity.rteditor.RTToolbar
+import android.R.id.message
+import com.onegravity.rteditor.RTEditText
 
 
 class PostEditorActivity : AppCompatActivity() {
@@ -54,10 +52,17 @@ class PostEditorActivity : AppCompatActivity() {
         // create RTManager
         val rtApi = RTApi(this, RTProxyImpl(this), RTMediaFactoryImpl(this, true))
         val rtManager = RTManager(rtApi, savedInstanceState)
+        // register toolbar
+        val toolbarContainer = rte_toolbar_container as ViewGroup
+        val rtToolbar: View = toolbarContainer.findViewById(R.id.rte_toolbar)
+        if (rtToolbar != null) {
+            rtManager.registerToolbar(toolbarContainer, rtToolbar as RTToolbar)
+        }
 
-
-
-
+        // register editor & set text
+        val rtEditText = rtEditText as RTEditText
+        rtManager.registerEditor(rtEditText, true)
+        //rtEditText.setRichTextEditing(true, message)
         //Todo: Add back button
 
         button_save_file.setOnClickListener { view -> savePost(view) }
