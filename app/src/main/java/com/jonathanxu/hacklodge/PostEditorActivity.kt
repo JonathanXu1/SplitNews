@@ -8,6 +8,16 @@ import android.view.View
 import android.widget.Toast
 import java.io.File
 import java.util.*
+import com.onegravity.rteditor.RTManager
+import com.onegravity.rteditor.api.RTMediaFactoryImpl
+import com.onegravity.rteditor.api.RTProxyImpl
+import com.onegravity.rteditor.api.RTApi
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class PostEditorActivity : AppCompatActivity() {
@@ -40,6 +50,13 @@ class PostEditorActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_post_editor)
         title = "Post an Article"
+
+        // create RTManager
+        val rtApi = RTApi(this, RTProxyImpl(this), RTMediaFactoryImpl(this, true))
+        val rtManager = RTManager(rtApi, savedInstanceState)
+
+
+
 
         //Todo: Add back button
 

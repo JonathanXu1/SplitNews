@@ -27,6 +27,8 @@
         app:layout_constraintTop_toBottomOf="@+id/et_title"
         />
 
+    <include android:id="@+id/rte_toolbar_container" layout="@layout/rte_toolbar" />
+
     <com.onegravity.rteditor.RTEditText
         android:id="@+id/rtEditText"
         android:layout_width="0dp"
