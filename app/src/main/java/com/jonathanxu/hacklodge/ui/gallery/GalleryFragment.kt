@@ -37,10 +37,6 @@ class GalleryFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         fileList = activity?.filesDir?.listFiles() as Array<File>
-
-        for (file in fileList) {
-            Log.d(TAG, "Found file ${file.absolutePath}")
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
