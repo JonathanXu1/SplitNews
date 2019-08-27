@@ -15,6 +15,8 @@ import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.api.format.RTFormat
 import kotlinx.android.synthetic.main.activity_post_editor.*
+import org.json.JSONObject
+import org.json.JSONTokener
 import java.io.File
 import java.util.*
 
@@ -22,27 +24,36 @@ import java.util.*
 class PostEditorActivity : AppCompatActivity() {
 
     private val TAG = "PostEditor"
-
     private lateinit var fileName: String
+    private lateinit var titleDirectory: JSONObject
 
     private fun savePost(view: View) {
-        // Save the post by writing to file
-        Log.d(TAG, "Writing file to private storage")
+
         // Get the data from the editor
-        // Todo the actual post body
         val title = et_title.text.toString().trim()
         val location = et_location.text.toString().trim()
-
         val content = rtEditText.getText(RTFormat.HTML)
 
-        val file = File(filesDir, fileName)
+        // Get the JSON file title directory
+        Log.d(TAG, "Getting title directory JSON")
+        val directoryFile = File(filesDir, "titleDirectory.json")
+        // Check if directory exists, otherwise just name a new object
+        titleDirectory = if (directoryFile.name in fileList()) {
+            JSONTokener(directoryFile.readText()).nextValue() as JSONObject
+        } else {
+            JSONObject()
+        }
+        // Put the title into the directory
+        titleDirectory.put(fileName, title)
+        // Write the directory file
+        directoryFile.writeText(titleDirectory.toString())
+        Log.d(TAG, "Wrote title to directory")
 
+        // Save the post by writing to file
+        Log.d(TAG, "Writing file to private storage")
+        val file = File(filesDir, "$fileName.html")
         // Write the file
-        val outputBuilder = StringBuilder()
-        outputBuilder.append("# $title\n")
-        outputBuilder.append(content)
-        // Todo consider whether to include location and such as metadata
-        file.writeText(outputBuilder.toString())
+        file.writeText(content)
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "File saved to ${file.absolutePath}")
@@ -61,10 +72,9 @@ class PostEditorActivity : AppCompatActivity() {
         setContentView(R.layout.activity_post_editor)
         title = "Post an Article"
 
-        // Setup the file we're editing/
-        // Todo take file names from the intent if it already exists
-
-        fileName = UUID.randomUUID().toString() + ".md"
+        // Setup the file we're editing
+        val uuidString = UUID.randomUUID().toString()
+        fileName = uuidString
 
         // create RTManager
         val rtApi = RTApi(this, RTProxyImpl(this), RTMediaFactoryImpl(this, true))
