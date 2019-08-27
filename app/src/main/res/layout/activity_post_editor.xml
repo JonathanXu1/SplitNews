@@ -27,7 +27,15 @@
         app:layout_constraintTop_toBottomOf="@+id/et_title"
         />
 
-    <include android:id="@+id/rte_toolbar_container" layout="@layout/rte_toolbar" />
+    <include
+        android:id="@+id/rte_toolbar_container"
+        layout="@layout/rte_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_location" />
 
     <com.onegravity.rteditor.RTEditText
         android:id="@+id/rtEditText"
@@ -40,8 +48,10 @@
         android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
         app:layout_constraintBottom_toTopOf="@+id/button_save_file"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_location" />
+        app:layout_constraintTop_toBottomOf="@+id/rte_toolbar_container"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button_save_file"

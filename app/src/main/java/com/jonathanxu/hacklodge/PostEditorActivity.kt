@@ -1,5 +1,6 @@
 package com.jonathanxu.hacklodge
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -45,6 +46,10 @@ class PostEditorActivity : AppCompatActivity() {
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "File saved to ${file.absolutePath}")
+
+        // Go back
+        val intent = Intent(this@PostEditorActivity, MainActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
