@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
+import com.jonathanxu.hacklodge.util.FileListAdapter
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
 
@@ -20,6 +21,7 @@ class GalleryFragment : Fragment() {
     private val TAG = "Gallery"
     private lateinit var fileList: Array<File>
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var adapter: FileListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,14 +41,18 @@ class GalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fileList = activity?.filesDir?.listFiles() as Array<File>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        fileList = activity?.filesDir?.listFiles() as Array<File>
+
         linearLayoutManager = LinearLayoutManager(this.context)
         gallery_list.layoutManager = linearLayoutManager
+        adapter = FileListAdapter(fileList)
+        gallery_list.adapter = adapter
+        // adapter.notifyItemInserted() might be useful later
 
         for (file in fileList) {
             Log.d(TAG, "Found file ${file.absolutePath}")
