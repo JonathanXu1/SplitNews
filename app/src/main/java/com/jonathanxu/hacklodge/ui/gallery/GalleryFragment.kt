@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
+import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
 
 class GalleryFragment : Fragment() {
@@ -17,6 +19,7 @@ class GalleryFragment : Fragment() {
     private lateinit var galleryViewModel: GalleryViewModel
     private val TAG = "Gallery"
     private lateinit var fileList: Array<File>
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +45,13 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        linearLayoutManager = LinearLayoutManager(this.context)
+        gallery_list.layoutManager = linearLayoutManager
+
         for (file in fileList) {
             Log.d(TAG, "Found file ${file.absolutePath}")
+            val newTextView = TextView(this.context)
+            newTextView.text = file.name
         }
     }
 }
