@@ -1,43 +1,51 @@
 package com.jonathanxu.hacklodge
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_post_editor.*
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import java.io.File
-import java.util.*
+import androidx.appcompat.app.AppCompatActivity
+import com.onegravity.rteditor.RTEditText
 import com.onegravity.rteditor.RTManager
+import com.onegravity.rteditor.RTToolbar
+import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
-import com.onegravity.rteditor.api.RTApi
-import android.view.ViewGroup
-import com.onegravity.rteditor.RTToolbar
-import android.R.id.message
-import com.onegravity.rteditor.RTEditText
+import com.onegravity.rteditor.api.format.RTFormat
+import kotlinx.android.synthetic.main.activity_post_editor.*
+import java.io.File
+import java.util.*
 
 
 class PostEditorActivity : AppCompatActivity() {
 
+    private val TAG = "PostEditor"
+
     private fun savePost(view: View) {
         // Save the post by writing to file
-        Log.d("SAVE", "Writing file to private storage")
+        Log.d(TAG, "Writing file to private storage")
         // Get the data from the editor
         // Todo the actual post body
         val title = et_title.text.toString().trim()
-        et_title.text.clear()
         val location = et_location.text.toString().trim()
-        et_location.text.clear()
+
+        val content = rtEditText.getText(RTFormat.HTML)
+
         // Make file title lower_case
+        // Todo replace this with generated filename per activity start
         val fileTitle = title.replace(" ", "_").toLowerCase(Locale.ROOT)
         val file = File(filesDir, "$fileTitle.md")
-        // Write the file todo construct the string before passing to writeText
+
+        // Write the file
+        val outputBuilder = StringBuilder()
+        outputBuilder.append("# $title\n")
+        outputBuilder.append(content)
         // Todo consider whether to include location and such as metadata
-        file.writeText("# $title\nThis file that came from $location")
+        file.writeText(outputBuilder.toString())
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
-        Log.d("SAVE", "File written to ${file.absolutePath}")
+        Log.d(TAG, "File written to ${file.absolutePath}")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -116,7 +116,7 @@ class ShareFragment : Fragment(), WifiP2pManager.PeerListListener {
         // Indicates this device's details have changed.
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
 
-        Log.d("SHARE", "Added WifiP2pManager actions to intentFilter")
+        Log.d(TAG, "Added WifiP2pManager actions to intentFilter")
 
         manager = this.context?.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
         channel = manager.initialize(this.context, Looper.getMainLooper(), null)
