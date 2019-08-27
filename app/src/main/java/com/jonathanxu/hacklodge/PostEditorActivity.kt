@@ -22,6 +22,8 @@ class PostEditorActivity : AppCompatActivity() {
 
     private val TAG = "PostEditor"
 
+    private lateinit var fileName: String
+
     private fun savePost(view: View) {
         // Save the post by writing to file
         Log.d(TAG, "Writing file to private storage")
@@ -32,10 +34,7 @@ class PostEditorActivity : AppCompatActivity() {
 
         val content = rtEditText.getText(RTFormat.HTML)
 
-        // Make file title lower_case
-        // Todo replace this with generated filename per activity start
-        val fileTitle = title.replace(" ", "_").toLowerCase(Locale.ROOT)
-        val file = File(filesDir, "$fileTitle.md")
+        val file = File(filesDir, fileName)
 
         // Write the file
         val outputBuilder = StringBuilder()
@@ -45,7 +44,7 @@ class PostEditorActivity : AppCompatActivity() {
         file.writeText(outputBuilder.toString())
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "File written to ${file.absolutePath}")
+        Log.d(TAG, "File saved to ${file.absolutePath}")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +55,11 @@ class PostEditorActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_post_editor)
         title = "Post an Article"
+
+        // Setup the file we're editing/
+        // Todo take file names from the intent if it already exists
+
+        fileName = UUID.randomUUID().toString() + ".md"
 
         // create RTManager
         val rtApi = RTApi(this, RTProxyImpl(this), RTMediaFactoryImpl(this, true))
@@ -70,6 +74,7 @@ class PostEditorActivity : AppCompatActivity() {
         // register editor & set text
         val rtEditText = rtEditText as RTEditText
         rtManager.registerEditor(rtEditText, true)
+        Log.d(TAG, "Initialized rtEditor")
         //rtEditText.setRichTextEditing(true, message)
         //Todo: Add back button
 
