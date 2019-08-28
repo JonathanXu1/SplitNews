@@ -3,6 +3,8 @@ package com.jonathanxu.hacklodge
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -54,28 +56,29 @@ class PostEditorActivity : AppCompatActivity() {
         Log.d(TAG, "Initialized rtEditor")
         //rtEditText.setRichTextEditing(true, message)
         //Todo: Add back button
-
-        button_save_file.setOnClickListener { view -> savePost(view) }
     }
 
-    private fun savePost(view: View) {
+    private fun savePost() {
         // Todo: Support more data fields
         // Get the data from the editor
-        val author = null
         val title = et_title.text.toString().trim()
-        val subtitle = null
+        val author = "placeholder"
+        val subtitle = et_subtitle.text.toString().trim()
         val location = et_location.text.toString().trim()
-        val timestamp = null
+        val timestamp = "placeholder"
         val content = rtEditText.getText(RTFormat.HTML)
 
         // Save the post by writing to file
         Log.d(TAG, "Writing file to private storage")
         val file = File(filesDir, "$fileName.html")
         // Write the file
+        /*
         val metadata = "<meta> author='$author' title ='$title' subtitle='$subtitle' location='$location'" +
-                " timestamp='$timestamp'+ </header>"
+                " timestamp='$timestamp'+ </meta>"
         val output = content.substringBefore("<head>") + "<head>" + metadata + content.substringAfter("<head>")
-        file.writeText(output)
+         */
+        file.writeText(title + "\n" + author + "\n" + subtitle  + "\n" + location  + "\n" +
+        timestamp + "\n" + content)
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "File saved to ${file.absolutePath}")
@@ -83,5 +86,21 @@ class PostEditorActivity : AppCompatActivity() {
         // Go back to main screen
         val intent = Intent(this@PostEditorActivity, MainActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.edit_post, menu)// Menu Resource, Menu
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.getItemId()) {
+            R.id.button_save_file -> {
+                savePost()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

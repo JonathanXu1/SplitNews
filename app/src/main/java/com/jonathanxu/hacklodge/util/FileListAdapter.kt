@@ -8,6 +8,7 @@ import com.jonathanxu.hacklodge.R
 import kotlinx.android.synthetic.main.news_item_row.view.*
 import java.io.File
 
+
 class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<FileListAdapter.FileHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileHolder {
@@ -35,8 +36,28 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
 
         fun bindFile(file: File) {
             this.file = file
-
-            view.item_news_title.text = file.name
+            /*
+            val doc = Jsoup.parse(file.absolutePath)
+            val metaTags = doc.getElementsByTag("meta")
+            for (metaTag in metaTags) {
+                var author = metaTag.attr("author")
+                var subtitle = metaTag.attr("subtitle")
+                var location = metaTag.attr("location")
+                var timestamp  = metaTag.attr("timestamp")
+                view.item_news_title.text = metaTag.attr("title")
+                break
+            }
+            */
+            val bufferedReader = file.bufferedReader()
+            val list : List<String> = bufferedReader
+                .useLines { lines: Sequence<String> ->
+                    lines
+                        .take(6)
+                        .toList()
+                }
+            Log.d(TAG, list.toString())
+            view.item_news_title.text = list[0]
+            view.item_news_subtitle.text = list[2]
         }
 
         override fun onClick(view: View) {
