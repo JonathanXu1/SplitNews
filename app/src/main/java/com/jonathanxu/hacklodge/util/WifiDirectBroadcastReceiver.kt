@@ -10,6 +10,7 @@ import com.jonathanxu.hacklodge.ui.share.ShareFragment
 class WifiDirectBroadcastReceiver(
     private var manager: WifiP2pManager,
     private var channel: WifiP2pManager.Channel,
+    private val peerListListener: WifiP2pManager.PeerListListener,
     private var shareFragment: ShareFragment
 ) : BroadcastReceiver() {
 
@@ -18,17 +19,15 @@ class WifiDirectBroadcastReceiver(
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
-                Log.d(TAG, "WIFI_P2P_STATE_CHANGED_ACTION")
                 // Determine if Wifi P2P mode is enabled or not, alert
                 // the Activity.
                 val state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
                 shareFragment.isWifiP2pEnabled = state == WifiP2pManager.WIFI_P2P_STATE_ENABLED
+                Log.d(TAG, "WIFI_P2P_STATE_CHANGED_ACTION: State $state")
             }
             WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> {
                 Log.d(TAG, "WIFI_P2P_PEERS_CHANGED_ACTION")
-                // The peer list has changed! We should probably do something about
-                // that.
-
+                manager.requestPeers(channel, peerListListener)
             }
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                 Log.d(TAG, "WIFI_P2P_CONNECTION CHANGE ACTION")
