@@ -82,9 +82,7 @@ class PostEditorActivity : AppCompatActivity() {
         // register toolbar
         val toolbarContainer = rte_toolbar_container as ViewGroup
         val rtToolbar: View = toolbarContainer.findViewById(R.id.rte_toolbar)
-        if (rtToolbar != null) {
-            rtManager.registerToolbar(toolbarContainer, rtToolbar as RTToolbar)
-        }
+        rtManager.registerToolbar(toolbarContainer, rtToolbar as RTToolbar)
 
         // register editor & set text
         val rtEditText = rtEditText as RTEditText
