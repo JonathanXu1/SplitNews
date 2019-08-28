@@ -1,4 +1,4 @@
-package com.jonathanxu.hacklodge.ui.send
+package com.jonathanxu.hacklodge.ui.torrent
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.jonathanxu.hacklodge.R
 
-class SendFragment : Fragment() {
+class TorrentFragment : Fragment() {
 
-    private lateinit var sendViewModel: SendViewModel
+    private lateinit var torrentViewModel: TorrentViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sendViewModel =
-            ViewModelProviders.of(this).get(SendViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_send, container, false)
+        torrentViewModel =
+            ViewModelProviders.of(this).get(TorrentViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_torrent, container, false)
         val textView: TextView = root.findViewById(R.id.text_send)
-        sendViewModel.text.observe(this, Observer {
+        torrentViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root
