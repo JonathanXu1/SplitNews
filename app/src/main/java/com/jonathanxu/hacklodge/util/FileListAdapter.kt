@@ -35,6 +35,7 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
 
         fun bindFile(file: File) {
             this.file = file
+
             view.item_news_title.text = file.name
         }
 

@@ -27,42 +27,6 @@ class PostEditorActivity : AppCompatActivity() {
     private lateinit var fileName: String
     private lateinit var titleDirectory: JSONObject
 
-    private fun savePost(view: View) {
-
-        // Get the data from the editor
-        val title = et_title.text.toString().trim()
-        val location = et_location.text.toString().trim()
-        val content = rtEditText.getText(RTFormat.HTML)
-
-        // Get the JSON file title directory
-        Log.d(TAG, "Getting title directory JSON")
-        val directoryFile = File(filesDir, "titleDirectory.json")
-        // Check if directory exists, otherwise just name a new object
-        titleDirectory = if (directoryFile.name in fileList()) {
-            JSONTokener(directoryFile.readText()).nextValue() as JSONObject
-        } else {
-            JSONObject()
-        }
-        // Put the title into the directory
-        titleDirectory.put(fileName, title)
-        // Write the directory file
-        directoryFile.writeText(titleDirectory.toString())
-        Log.d(TAG, "Wrote title to directory")
-
-        // Save the post by writing to file
-        Log.d(TAG, "Writing file to private storage")
-        val file = File(filesDir, "$fileName.html")
-        // Write the file
-        file.writeText(content)
-        // Notify the user the file was saved
-        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "File saved to ${file.absolutePath}")
-
-        // Go back
-        val intent = Intent(this@PostEditorActivity, MainActivity::class.java)
-        startActivity(intent)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,6 +56,32 @@ class PostEditorActivity : AppCompatActivity() {
         //Todo: Add back button
 
         button_save_file.setOnClickListener { view -> savePost(view) }
+    }
 
+    private fun savePost(view: View) {
+        // Todo: Support more data fields
+        // Get the data from the editor
+        val author = null
+        val title = et_title.text.toString().trim()
+        val subtitle = null
+        val location = et_location.text.toString().trim()
+        val timestamp = null
+        val content = rtEditText.getText(RTFormat.HTML)
+
+        // Save the post by writing to file
+        Log.d(TAG, "Writing file to private storage")
+        val file = File(filesDir, "$fileName.html")
+        // Write the file
+        val metadata = "<meta> author='$author' title ='$title' subtitle='$subtitle' location='$location'" +
+                " timestamp='$timestamp'+ </header>"
+        val output = content.substringBefore("<head>") + "<head>" + metadata + content.substringAfter("<head>")
+        file.writeText(output)
+        // Notify the user the file was saved
+        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "File saved to ${file.absolutePath}")
+
+        // Go back to main screen
+        val intent = Intent(this@PostEditorActivity, MainActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -1,4 +1,4 @@
-package com.jonathanxu.hacklodge.ui.gallery
+package com.jonathanxu.hacklodge.ui.feed
 
 import android.os.Bundle
 import android.util.Log
@@ -14,9 +14,9 @@ import com.jonathanxu.hacklodge.util.FileListAdapter
 import kotlinx.android.synthetic.main.fragment_feed.*
 import java.io.File
 
-class GalleryFragment : Fragment() {
+class FeedFragment : Fragment() {
 
-    private lateinit var galleryViewModel: GalleryViewModel
+    private lateinit var feedViewModel: FeedViewModel
     private val TAG = "Gallery"
     private lateinit var fileList: Array<File>
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -31,8 +31,8 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        galleryViewModel =
-            ViewModelProviders.of(this).get(GalleryViewModel::class.java)
+        feedViewModel =
+            ViewModelProviders.of(this).get(FeedViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_feed, container, false)
         return root
     }
@@ -41,17 +41,17 @@ class GalleryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fileList = activity?.filesDir?.listFiles() as Array<File>
-
         linearLayoutManager = LinearLayoutManager(this.context)
-        gallery_list.layoutManager = linearLayoutManager
-        adapter = FileListAdapter(fileList)
-        gallery_list.adapter = adapter
-        // adapter.notifyItemInserted() might be useful later
 
-        for (file in fileList) {
-            Log.d(TAG, "Found file ${file.absolutePath}")
-            val newTextView = TextView(this.context)
-            newTextView.text = file.name
+        if (fileList.isEmpty()){
+            noNews.visibility = View.VISIBLE
+        } else {
+            noNews.visibility = View.GONE
+            gallery_list.layoutManager = linearLayoutManager
+            adapter = FileListAdapter(fileList)
+            gallery_list.adapter = adapter
+            // adapter.notifyItemInserted() might be useful later
         }
+
     }
 }
