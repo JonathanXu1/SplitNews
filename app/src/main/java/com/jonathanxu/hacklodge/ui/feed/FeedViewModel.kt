@@ -1,13 +1,13 @@
-package com.jonathanxu.hacklodge.ui.send
+package com.jonathanxu.hacklodge.ui.feed
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SendViewModel : ViewModel() {
+class FeedViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is send Fragment"
+        value = "This is gallery Fragment"
     }
     val text: LiveData<String> = _text
 }
