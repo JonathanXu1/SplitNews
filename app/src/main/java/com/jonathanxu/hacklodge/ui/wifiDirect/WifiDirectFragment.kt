@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -34,6 +35,7 @@ class WifiDirectFragment : Fragment() {
     private lateinit var channel: WifiP2pManager.Channel
     private lateinit var manager: WifiP2pManager
     var isWifiP2pEnabled = false
+    private val PORT = 42069
 
     private lateinit var receiver: WifiDirectBroadcastReceiver
 
@@ -119,6 +121,26 @@ class WifiDirectFragment : Fragment() {
         this.context?.unregisterReceiver(receiver)
     }
 
+    private fun startServiceRegistration() {
+        val record: Map<String, String> = mapOf(
+            "listenport" to PORT.toString(),
+            "buddyname" to "idk what this is lmao", // todo figure out
+            "available" to "visible"
+        )
+        val serviceInfo = WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record)
+
+        manager.addLocalService(channel, serviceInfo, object: WifiP2pManager.ActionListener {
+            override fun onSuccess() {
+                Log.d(TAG, "Service successfully added")
+            }
+
+            override fun onFailure(reasonCode: Int) {
+                Log.d(TAG, "Service couldn't be added with error code $reasonCode")
+            }
+
+        })
+    }
+
     private fun startPeerDiscovery(view: View) {
 
         // Make sure we have the location permission and ask for it if we don't
@@ -132,6 +154,8 @@ class WifiDirectFragment : Fragment() {
         // Disable the button
         (view as Button).text = getString(R.string.scan_progress)
         view.isEnabled = false
+
+        startServiceRegistration()
 
         // Start peer discovery
         manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
