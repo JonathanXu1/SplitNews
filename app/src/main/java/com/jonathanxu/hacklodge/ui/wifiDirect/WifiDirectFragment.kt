@@ -21,7 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
+import com.jonathanxu.hacklodge.util.DeviceListAdapter
 import com.jonathanxu.hacklodge.util.WifiDirectBroadcastReceiver
 import kotlinx.android.synthetic.main.fragment_wifi_direct.*
 
@@ -37,9 +39,12 @@ class WifiDirectFragment : Fragment() {
     var isWifiP2pEnabled = false
     private val PORT = 42069
 
+    // For the RecyclerView
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var deviceListAdapter: DeviceListAdapter
+
     private lateinit var receiver: WifiDirectBroadcastReceiver
 
-    // Todo move into Adapter for RecyclerView
     private val peers = mutableListOf<WifiP2pDevice>()
     private val peerListListener = WifiP2pManager.PeerListListener { peerList ->
         val refreshedPeers = peerList.deviceList
@@ -50,7 +55,8 @@ class WifiDirectFragment : Fragment() {
             // If an AdapterView is backed by this data, notify it
             // of the change. For instance, if you have a ListView of
             // available peers, trigger an update.
-            // todo (listAdapter as WiFiPeerListAdapter).notifyDataSetChanged()
+            deviceListAdapter.notifyDataSetChanged()
+            Log.d(TAG, "Peer list changed")
 
             // Perform any other updates needed based on the new list of
             // peers connected to the Wi-Fi P2P network.
@@ -105,6 +111,11 @@ class WifiDirectFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        linearLayoutManager = LinearLayoutManager(this.context)
+        device_list.layoutManager = linearLayoutManager
+        deviceListAdapter = DeviceListAdapter(peers.asIterable().toList().toTypedArray())
+        device_list.adapter = deviceListAdapter
 
         button_direct_scan.text = getString(R.string.scan_direct)
         button_direct_scan.setOnClickListener { clickedView -> startPeerDiscovery(clickedView) }

@@ -1,11 +1,9 @@
 package com.jonathanxu.hacklodge.ui.feed
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,10 +19,6 @@ class FeedFragment : Fragment() {
     private lateinit var fileList: Array<File>
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: FileListAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
