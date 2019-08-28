@@ -122,7 +122,7 @@ class WifiDirectFragment : Fragment() {
     private fun startPeerDiscovery(view: View) {
 
         // Make sure we have the location permission and ask for it if we don't
-        var locationPermissionStatus = ContextCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        val locationPermissionStatus = ContextCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
         if (locationPermissionStatus != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
