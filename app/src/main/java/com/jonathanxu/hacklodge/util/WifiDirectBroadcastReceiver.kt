@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
-import com.jonathanxu.hacklodge.ui.share.ShareFragment
+import com.jonathanxu.hacklodge.ui.wifiDirect.WifiDirectFragment
 
 class WifiDirectBroadcastReceiver(
     private var manager: WifiP2pManager,
     private var channel: WifiP2pManager.Channel,
     private val peerListListener: WifiP2pManager.PeerListListener,
-    private var shareFragment: ShareFragment
+    private var shareFragment: WifiDirectFragment
 ) : BroadcastReceiver() {
 
     private val TAG = "BroadcastReceiver"

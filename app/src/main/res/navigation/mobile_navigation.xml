@@ -31,13 +31,13 @@
 
     <fragment
         android:id="@+id/nav_share"
-        android:name="com.jonathanxu.hacklodge.ui.share.ShareFragment"
+        android:name="com.jonathanxu.hacklodge.ui.wifiDirect.WifiDirectFragment"
         android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
+        tools:layout="@layout/fragment_wifi_direct" />
 
     <fragment
         android:id="@+id/nav_send"
-        android:name="com.jonathanxu.hacklodge.ui.send.SendFragment"
+        android:name="com.jonathanxu.hacklodge.ui.torrent.TorrentFragment"
         android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        tools:layout="@layout/fragment_torrent" />
 </navigation>

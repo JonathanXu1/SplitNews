@@ -1,13 +1,13 @@
-package com.jonathanxu.hacklodge.ui.send
+package com.jonathanxu.hacklodge.ui.wifiDirect
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SendViewModel : ViewModel() {
+class WifiDirectViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is send Fragment"
+        value = "mynamejeff"
     }
     val text: LiveData<String> = _text
 }

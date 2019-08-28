@@ -1,4 +1,4 @@
-package com.jonathanxu.hacklodge.ui.share
+package com.jonathanxu.hacklodge.ui.wifiDirect
 
 import android.Manifest
 import android.content.Context
@@ -22,12 +22,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.jonathanxu.hacklodge.R
 import com.jonathanxu.hacklodge.util.WifiDirectBroadcastReceiver
-import kotlinx.android.synthetic.main.fragment_share.*
+import kotlinx.android.synthetic.main.fragment_wifi_direct.*
 
-class ShareFragment : Fragment() {
+class WifiDirectFragment : Fragment() {
 
-    private lateinit var shareViewModel: ShareViewModel
-    private val TAG = "ShareFragment"
+    private lateinit var wifiDirectViewModel: WifiDirectViewModel
+    private val TAG = "WifiDirectFragment"
 
     // WiFi P2P stuff
     private val intentFilter = IntentFilter()
@@ -66,11 +66,11 @@ class ShareFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        shareViewModel =
-            ViewModelProviders.of(this).get(ShareViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_share, container, false)
+        wifiDirectViewModel =
+            ViewModelProviders.of(this).get(WifiDirectViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_wifi_direct, container, false)
         val textView: TextView = root.findViewById(R.id.text_share)
-        shareViewModel.text.observe(this, Observer {
+        wifiDirectViewModel.text.observe(this, Observer {
             textView.text = it
         })
 

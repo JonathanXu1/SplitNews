@@ -1,13 +1,13 @@
-package com.jonathanxu.hacklodge.ui.share
+package com.jonathanxu.hacklodge.ui.torrent
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ShareViewModel : ViewModel() {
+class TorrentViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "mynamejeff"
+        value = "This is send Fragment"
     }
     val text: LiveData<String> = _text
 }
