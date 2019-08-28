@@ -29,7 +29,7 @@
         tools:ignore="AllowBackup, GoogleAppIndexingWarning">
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -42,7 +42,7 @@
         </activity>
         <activity
             android:name=".PostEditorActivity"
-            android:label="@string/title_activity_new"></activity>
+            android:label="@string/title_activity_new" />
         <activity android:name="com.onegravity.rteditor.media.choose.MediaChooserActivity" />
         <activity android:name="com.onegravity.rteditor.media.crop.CropImageActivity" />
     </application>
