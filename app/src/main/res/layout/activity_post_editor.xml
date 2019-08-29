@@ -8,12 +8,14 @@
 
     <EditText
         android:id="@+id/et_title"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="15"
         android:hint="@string/post_title"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/et_subtitle"
@@ -21,15 +23,32 @@
         android:layout_height="wrap_content"
         android:ems="15"
         android:hint="Subtitle"
-        app:layout_constraintTop_toBottomOf="@+id/et_title" />
+        app:layout_constraintTop_toBottomOf="@+id/et_title"
+        android:inputType="text"/>
 
-    <EditText
-        android:id="@+id/et_location"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/address_bar"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="15"
-        android:hint="@string/post_location"
-        app:layout_constraintTop_toBottomOf="@+id/et_subtitle" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_subtitle">
+
+        <EditText
+            android:id="@+id/et_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:ems="15"
+            android:hint="@string/post_location" />
+
+        <Button
+            android:id="@+id/search_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Search" />
+
+    </RelativeLayout>
 
     <include
         android:id="@+id/rte_toolbar_container"
@@ -39,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_location" />
+        app:layout_constraintTop_toBottomOf="@+id/address_bar" />
 
     <com.onegravity.rteditor.RTEditText
         android:id="@+id/rtEditText"

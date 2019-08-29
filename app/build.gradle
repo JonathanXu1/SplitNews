@@ -45,6 +45,7 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.1gravity:android-rteditor:1.6.1'
 
-    //HTML parse dependency
-    implementation 'org.jsoup:jsoup:1.11.3'
+    // OKHTTP
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    
 }

@@ -58,6 +58,7 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
             Log.d(TAG, list.toString())
             view.item_news_title.text = list[0]
             view.item_news_subtitle.text = list[2]
+            view.item_news_date.text = list[4]
         }
 
         override fun onClick(view: View) {
