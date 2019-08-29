@@ -179,7 +179,7 @@ class WifiDirectFragment : Fragment() {
         view.isEnabled = false
 
         // Start peer discovery
-//        manager.addServiceRequest(channel, )
+        // todo manager.addServiceRequest(channel, )
         manager.discoverServices(channel, object : WifiP2pManager.ActionListener {
 
             override fun onSuccess() {
