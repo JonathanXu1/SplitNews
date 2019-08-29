@@ -27,7 +27,7 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
 
         private val TAG = "FileHolder"
         private lateinit var file: File
-        private lateinit var view: View
+        private var view: View
 
         init {
             view.setOnClickListener(this)

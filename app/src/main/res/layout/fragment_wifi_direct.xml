@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,12 +19,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_direct_scan"
+    <LinearLayout
+        android:id="@+id/button_div"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_share"
+        app:layout_constraintBottom_toTopOf="@id/device_div"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/placeholder" />
+        app:layout_constraintTop_toBottomOf="@id/text_share">
+
+        <Button
+            android:id="@+id/button_direct_scan"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button_direct_broadcast"
+            app:layout_constraintTop_toBottomOf="@id/text_share"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/button_direct_broadcast"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder"
+            app:layout_constraintLeft_toRightOf="@id/button_direct_scan"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_share"
+            tools:ignore="ButtonStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/device_div"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_div">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/device_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
