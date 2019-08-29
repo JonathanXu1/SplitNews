@@ -19,7 +19,7 @@
     <string name="post_location">Location</string>
     <string name="post_title">Title</string>
     <string name="placeholder">placeholder</string>
-    <string name="scan_direct">SCAN</string>
+    <string name="scan_direct">SEND</string>
     <string name="editor_hint">Write your article here…</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -39,4 +39,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="scan_progress">Scanning…</string>
     <string name="no_articles">You have no articles yet!</string>
+    <string name="broadcast_direct">RECEIVE</string>
+    <string name="broadcast_progress">WAITING…</string>
 </resources>

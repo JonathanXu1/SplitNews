@@ -1,13 +1,14 @@
 package com.jonathanxu.hacklodge.util
 
 import android.net.wifi.p2p.WifiP2pDevice
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jonathanxu.hacklodge.R
 import kotlinx.android.synthetic.main.device_item.view.*
 
-class DeviceListAdapter(private val devices: Array<WifiP2pDevice>) :
+class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :
     RecyclerView.Adapter<DeviceListAdapter.DeviceHolder>() {
 
     override fun onCreateViewHolder(
@@ -29,7 +30,7 @@ class DeviceListAdapter(private val devices: Array<WifiP2pDevice>) :
 
         private val TAG = "DeviceHolder"
         private lateinit var device: WifiP2pDevice
-        private var view: View;
+        private var view: View
 
         init {
             view.setOnClickListener(this)
@@ -39,10 +40,11 @@ class DeviceListAdapter(private val devices: Array<WifiP2pDevice>) :
         fun bindDevice(device: WifiP2pDevice) {
             this.device = device
             view.device_name.text = device.deviceName
+            Log.d(TAG, "${device.deviceName} bound to view")
         }
 
         override fun onClick(clickedView: View?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            Log.d(TAG, "${clickedView?.device_name?.text} selected")
         }
 
     }
