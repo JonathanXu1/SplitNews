@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.device_item.view.*
 class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :
     RecyclerView.Adapter<DeviceListAdapter.DeviceHolder>() {
 
+    private val TAG = "DeviceListAdapter"
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -24,6 +26,10 @@ class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :
     override fun onBindViewHolder(holder: DeviceHolder, position: Int) {
         val device = devices[position]
         holder.bindDevice(device)
+        Log.d(
+            TAG,
+            "${device.deviceName} bound to view. Device ${position + 1} out of ${devices.size}"
+        )
     }
 
     class DeviceHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -40,11 +46,15 @@ class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :
         fun bindDevice(device: WifiP2pDevice) {
             this.device = device
             view.device_name.text = device.deviceName
-            Log.d(TAG, "${device.deviceName} bound to view")
+            Log.d(TAG, "${device.deviceName} bound to view.")
         }
 
         override fun onClick(clickedView: View?) {
             Log.d(TAG, "${clickedView?.device_name?.text} selected")
+//            val config = WifiP2pConfig().apply {
+//                deviceAddress = device.deviceAddress
+//                wps.setup = WpsInfo.PBC
+//            }
         }
 
     }
