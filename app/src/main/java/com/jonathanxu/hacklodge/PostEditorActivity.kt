@@ -1,13 +1,17 @@
 package com.jonathanxu.hacklodge
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.onegravity.rteditor.RTEditText
 import com.onegravity.rteditor.RTManager
@@ -16,11 +20,18 @@ import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.api.format.RTFormat
+import com.squareup.okhttp.*
 import kotlinx.android.synthetic.main.activity_post_editor.*
+import org.json.JSONArray
 import org.json.JSONObject
-import org.json.JSONTokener
 import java.io.File
+import java.io.IOException
+import java.net.URL
+import java.time.Instant
+import java.time.ZoneOffset
 import java.util.*
+import java.time.format.DateTimeFormatter
+
 
 
 class PostEditorActivity : AppCompatActivity() {
@@ -28,6 +39,7 @@ class PostEditorActivity : AppCompatActivity() {
     private val TAG = "PostEditor"
     private lateinit var fileName: String
     private lateinit var titleDirectory: JSONObject
+    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +68,41 @@ class PostEditorActivity : AppCompatActivity() {
         Log.d(TAG, "Initialized rtEditor")
         //rtEditText.setRichTextEditing(true, message)
         //Todo: Add back button
+
+        // Location init
+        search_location.setOnClickListener{
+            val locationInput = et_location.text.toString()
+            Log.d(TAG, "Searching: $locationInput")
+            val request = Request.Builder()
+                .url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(request: Request?, e: IOException?) {
+                }
+                override fun onResponse(response: Response) {
+                    val jsonResponse = response.body().string()
+                    //Log.d(TAG, jsonResponse)
+
+                    val jsonArray = JSONObject(jsonResponse).get("features") as JSONArray
+                    //Log.d(TAG, jsonArray.javaClass.name)
+                    for(i in 0 until jsonArray.length()){
+                        val location = jsonArray.getJSONObject(i)
+                        val locationName = location.getJSONObject("properties").get("name")
+                        Log.d(TAG, locationName.toString())
+                    }
+                    /*val keys = jsonObject.keys()
+                    while(keys.hasNext()) {
+                        val key = keys.next()
+                        val result = jsonObject.get(key)
+                        Log.d(TAG, result.toString())
+                    }*/
+                }
+            })
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun savePost() {
         // Todo: Support more data fields
         // Get the data from the editor
@@ -65,11 +110,15 @@ class PostEditorActivity : AppCompatActivity() {
         val author = "placeholder"
         val subtitle = et_subtitle.text.toString().trim()
         val location = et_location.text.toString().trim()
-        val timestamp = "placeholder"
+        val timestamp = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm")
+            .withZone(ZoneOffset.UTC)
+            .format(Instant.now())
         val content = rtEditText.getText(RTFormat.HTML)
 
         // Save the post by writing to file
         Log.d(TAG, "Writing file to private storage")
+        Log.d(TAG, timestamp)
         val file = File(filesDir, "$fileName.html")
         // Write the file
         /*
