@@ -74,7 +74,8 @@ class PostEditorActivity : AppCompatActivity() {
             val locationInput = et_location.text.toString()
             Log.d(TAG, "Searching: $locationInput")
             val request = Request.Builder()
-                .url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
+                //.url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
+                .url("https://nominatim.openstreetmap.org/search/$locationInput?format=json&limit=6")
                 .build()
 
             client.newCall(request).enqueue(object : Callback {
@@ -84,12 +85,14 @@ class PostEditorActivity : AppCompatActivity() {
                     val jsonResponse = response.body().string()
                     //Log.d(TAG, jsonResponse)
 
-                    val jsonArray = JSONObject(jsonResponse).get("features") as JSONArray
+                    val jsonArray = JSONArray(jsonResponse)
                     //Log.d(TAG, jsonArray.javaClass.name)
                     for(i in 0 until jsonArray.length()){
                         val location = jsonArray.getJSONObject(i)
-                        val locationName = location.getJSONObject("properties").get("name")
-                        Log.d(TAG, locationName.toString())
+                        val locationName = location.get("display_name").toString()
+                        val lat = location.get("lat").toString()
+                        val lon = location.get("lon").toString()
+                        Log.d(TAG, locationName)
                     }
                     /*val keys = jsonObject.keys()
                     while(keys.hasNext()) {
