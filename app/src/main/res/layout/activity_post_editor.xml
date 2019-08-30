@@ -22,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="15"
-        android:hint="Subtitle"
+        android:hint="@string/subtitle"
         app:layout_constraintTop_toBottomOf="@+id/et_title"
-        android:inputType="text"/>
+        android:inputType="text" />
 
 
     <AutoCompleteTextView

@@ -41,6 +41,7 @@
     <string name="no_articles">You have no articles yet!</string>
     <string name="broadcast_direct">RECEIVE</string>
     <string name="broadcast_progress">WAITING…</string>
+    <string name="subtitle">Subtitle</string>
 
     <!-- Location search dropdown -->
     <string-array name="locations_array">

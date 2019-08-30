@@ -1,7 +1,5 @@
 package com.jonathanxu.hacklodge
 
-import android.app.Activity
-import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -23,7 +21,10 @@ import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.api.format.RTFormat
-import com.squareup.okhttp.*
+import com.squareup.okhttp.Callback
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import com.squareup.okhttp.Response
 import kotlinx.android.synthetic.main.activity_post_editor.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -31,8 +32,8 @@ import java.io.File
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneOffset
-import java.util.*
 import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -87,33 +88,38 @@ class PostEditorActivity : AppCompatActivity() {
 
         // Location listener
         et_location.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                mTimer.cancel()
-                if (et_location.text.toString().isNotBlank()){
-                    mTimer = Timer()
-                    mTimer.schedule(
-                        object: TimerTask() {
-                            override fun run() {
-                                runOnUiThread(object: TimerTask() {
-                                    override fun run() {
-                                         getLocationList(et_location.text.toString())
-                                    }
-                                })
-                            }
-                        },
-                        1000
-                    )
+            override fun afterTextChanged(input: Editable?) {
+                if (!input.isNullOrBlank()) {
+                    getLocationList(input.toString())
                 }
             }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(inputText: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                mTimer.cancel()
+//                if (!inputText.isNullOrBlank()) {
+//                    getLocationList(inputText.toString())
+//                }
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                mTimer.cancel()
+//                if (et_location.text.toString().isNotBlank()){
+//                    getLocationList(et_location.text.toString())
+//                    mTimer = Timer()
+//                    mTimer.schedule(
+//                        object: TimerTask() {
+//                            override fun run() {
+//                                getLocationList(et_location.text.toString())
+//                            }
+//                        },
+//                        1000
+//                    )
+//                }
             }
 
         })
+
     }
 
-    fun getLocationList(locationInput:String){
+    fun getLocationList(locationInput:String) {
         Log.d(TAG, "Searching: $locationInput")
         val request = Request.Builder()
             //.url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
@@ -138,9 +144,13 @@ class PostEditorActivity : AppCompatActivity() {
                     Log.d(TAG, locationName)
                     mList.add(locationName)
                 }
-                mAdapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, mList)
-                et_location.setAdapter(mAdapter)
-                mAdapter.notifyDataSetChanged()
+                Log.d(TAG, "Data set changed, now has ${mList.size} items")
+                runOnUiThread {
+                    mAdapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, mList)
+                    et_location.threshold = 1
+                    et_location.setAdapter(mAdapter)
+                    mAdapter.notifyDataSetChanged()
+                }
             }
         })
     }
