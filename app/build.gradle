@@ -46,6 +46,6 @@ dependencies {
     implementation 'com.1gravity:android-rteditor:1.6.1'
 
     // OKHTTP
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+
 }
