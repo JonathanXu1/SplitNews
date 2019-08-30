@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.wifi.WpsInfo
+import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
@@ -57,6 +59,24 @@ class WifiDirectFragment : Fragment() {
             // available peers, trigger an update.
             deviceListAdapter.notifyDataSetChanged()
             Log.d(TAG, "Peer list changed. Found ${peers.size} peers")
+
+            for (device in peers) {
+                val config = WifiP2pConfig().apply {
+                    deviceAddress = device.deviceAddress
+                    wps.setup = WpsInfo.PBC
+                }
+
+                manager.connect(channel, config, object : WifiP2pManager.ActionListener {
+                    override fun onSuccess() {
+                        Log.d(TAG,"Successfully connected to ${device.deviceName}")
+                    }
+
+                    override fun onFailure(reasonCode: Int) {
+                        Log.d(TAG, "Failed to connect to ${device.deviceName} with code $reasonCode")
+                    }
+
+                })
+            }
 
             // Perform any other updates needed based on the new list of
             // peers connected to the Wi-Fi P2P network.
@@ -112,6 +132,20 @@ class WifiDirectFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Make sure we have the location permission and ask for it if we don't
+        val locationPermissionStatus = ContextCompat.checkSelfPermission(
+            this.requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        if (locationPermissionStatus != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this.requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        }
+
         linearLayoutManager = LinearLayoutManager(this.context)
         device_list.layoutManager = linearLayoutManager
         deviceListAdapter = DeviceListAdapter(peers)
@@ -121,7 +155,11 @@ class WifiDirectFragment : Fragment() {
         button_direct_scan.setOnClickListener { clickedView -> startPeerDiscovery(clickedView) }
 
         button_direct_broadcast.text = getString(R.string.broadcast_direct)
-        button_direct_broadcast.setOnClickListener { clickedView -> startServiceRegistration(clickedView)}
+        button_direct_broadcast.setOnClickListener { clickedView ->
+            startServiceRegistration(
+                clickedView
+            )
+        }
     }
 
     override fun onResume() {
@@ -147,7 +185,7 @@ class WifiDirectFragment : Fragment() {
         )
         val serviceInfo = WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record)
 
-        manager.addLocalService(channel, serviceInfo, object: WifiP2pManager.ActionListener {
+        manager.addLocalService(channel, serviceInfo, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
                 Log.d(TAG, "Service successfully added")
             }
@@ -166,33 +204,24 @@ class WifiDirectFragment : Fragment() {
 
     private fun startPeerDiscovery(view: View) {
 
-        // Make sure we have the location permission and ask for it if we don't
-        val locationPermissionStatus = ContextCompat.checkSelfPermission(this.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-        if (locationPermissionStatus != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0)
-        }
-
         // Disable the button
         (view as Button).text = getString(R.string.scan_progress)
         view.isEnabled = false
 
-        // Start peer discovery
-        // todo manager.addServiceRequest(channel, )
-        manager.discoverServices(channel, object : WifiP2pManager.ActionListener {
+        // Start service discovery
+        manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
 
             override fun onSuccess() {
                 // Code for when the discovery initiation is successful goes here.
                 // No services have actually been discovered yet, so this method
                 // can often be left blank. Code for peer discovery goes in the
                 // onReceive method, detailed below.
-                Log.d(TAG, "Service discovery successfully initiated")
+                Log.d(TAG, "Peer discovery successfully initiated")
             }
 
             override fun onFailure(reasonCode: Int) {
                 // Code for when the discovery initiation fails goes here.
-                Log.d(TAG, "Service discovery failed with error code $reasonCode")
+                Log.d(TAG, "Peer discovery failed with error code $reasonCode")
 
                 // Alert the user that something went wrong.
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
