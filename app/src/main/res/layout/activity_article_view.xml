@@ -21,7 +21,82 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleMarginBottom="200dp"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
             app:toolbarId="@+id/toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="32dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginStart="48dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="1"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/article_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="25dp"
+                    android:text="No Subtitle"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+                    <ImageView
+                        android:id="@+id/profilePic"
+                        android:layout_height="25dp"
+                        android:layout_width="25dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_person"
+                        />
+                    <TextView
+                        android:id="@+id/news_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Misha Larionov"
+                        android:textColor="@android:color/white"
+                        android:layout_marginEnd="20dp"/>
+
+                    <ImageView
+                        android:layout_height="25dp"
+                        android:layout_width="25dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_access_time"
+                        />
+                    <TextView
+                        android:id="@+id/news_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:text="No Time"/>
+                </LinearLayout>
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_height="25dp"
+                    android:layout_width="25dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_location_on"
+                    />
+                <TextView
+                    android:id="@+id/news_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No Location"
+                    android:textColor="@android:color/white"
+                    />
+                </LinearLayout>
+            </LinearLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -43,22 +118,15 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_arrow_downward"
-        app:useCompatPadding="true"/>
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/uv_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_gravity="center|start"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        app:layout_anchor="@id/dv_btn"
-        app:layout_anchorGravity="center|start"
+        android:layout_marginEnd="80dp"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_arrow_upward" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

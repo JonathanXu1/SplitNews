@@ -21,6 +21,7 @@ class ArticleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_view)
         setSupportActionBar(toolbar)
+        // Fabs
         uv_btn.setOnClickListener { view ->
             Snackbar.make(view, "Upvote", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
@@ -43,8 +44,10 @@ class ArticleActivity : AppCompatActivity() {
 
                 when(name){
                     "title" -> toolbar_layout.title = content
-//                    "subtitle" -> view.item_news_subtitle.text = content
-//                    "timestamp" -> view.item_news_date.text = content
+                    "subtitle" -> article_subtitle.text = content
+                    "timestamp" -> news_time.text = content
+                    "author" -> news_author.text = content
+                    "location" -> news_location.text = content
                 }
             }
 
