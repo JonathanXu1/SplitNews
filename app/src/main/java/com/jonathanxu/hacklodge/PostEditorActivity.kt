@@ -1,5 +1,7 @@
 package com.jonathanxu.hacklodge
 
+import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,20 +29,24 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
-import java.net.URL
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.*
 import java.time.format.DateTimeFormatter
-
+import kotlin.collections.ArrayList
 
 
 class PostEditorActivity : AppCompatActivity() {
 
     private val TAG = "PostEditor"
+    private val context = this
     private lateinit var fileName: String
     private lateinit var titleDirectory: JSONObject
     private val client = OkHttpClient()
+
+    private var mTimer = Timer()
+    private var mList = ArrayList<String>()
+    private lateinit var mAdapter:ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,40 +76,73 @@ class PostEditorActivity : AppCompatActivity() {
         //rtEditText.setRichTextEditing(true, message)
         //Todo: Add back button
 
-        // Location init
-        search_location.setOnClickListener{
-            val locationInput = et_location.text.toString()
-            Log.d(TAG, "Searching: $locationInput")
-            val request = Request.Builder()
-                //.url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
-                .url("https://nominatim.openstreetmap.org/search/$locationInput?format=json&limit=6")
-                .build()
+        // Location search dropdown
 
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(request: Request?, e: IOException?) {
-                }
-                override fun onResponse(response: Response) {
-                    val jsonResponse = response.body().string()
-                    //Log.d(TAG, jsonResponse)
-
-                    val jsonArray = JSONArray(jsonResponse)
-                    //Log.d(TAG, jsonArray.javaClass.name)
-                    for(i in 0 until jsonArray.length()){
-                        val location = jsonArray.getJSONObject(i)
-                        val locationName = location.get("display_name").toString()
-                        val lat = location.get("lat").toString()
-                        val lon = location.get("lon").toString()
-                        Log.d(TAG, locationName)
-                    }
-                    /*val keys = jsonObject.keys()
-                    while(keys.hasNext()) {
-                        val key = keys.next()
-                        val result = jsonObject.get(key)
-                        Log.d(TAG, result.toString())
-                    }*/
-                }
-            })
+        // Get the string array
+        val countries: Array<out String> = resources.getStringArray(R.array.locations_array)
+        // Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries).also { adapter ->
+            et_location.setAdapter(adapter)
         }
+
+        // Location listener
+        et_location.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                mTimer.cancel()
+                if (et_location.text.toString().isNotBlank()){
+                    mTimer = Timer()
+                    mTimer.schedule(
+                        object: TimerTask() {
+                            override fun run() {
+                                runOnUiThread(object: TimerTask() {
+                                    override fun run() {
+                                         getLocationList(et_location.text.toString())
+                                    }
+                                })
+                            }
+                        },
+                        1000
+                    )
+                }
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+        })
+    }
+
+    fun getLocationList(locationInput:String){
+        Log.d(TAG, "Searching: $locationInput")
+        val request = Request.Builder()
+            //.url("http://photon.komoot.de/api/?q=$locationInput&limit=6")
+            .url("https://nominatim.openstreetmap.org/search/$locationInput?format=json&limit=6")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(request: Request?, e: IOException?) {
+            }
+            override fun onResponse(response: Response) {
+
+                val jsonResponse = response.body().string()
+                //Log.d(TAG, jsonResponse)
+                val jsonArray = JSONArray(jsonResponse)
+                //Log.d(TAG, jsonArray.javaClass.name)
+                mList.clear()
+                for(i in 0 until jsonArray.length()){
+                    val location = jsonArray.getJSONObject(i)
+                    val locationName = location.get("display_name").toString()
+                    val lat = location.get("lat").toString()
+                    val lon = location.get("lon").toString()
+                    Log.d(TAG, locationName)
+                    mList.add(locationName)
+                }
+                mAdapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, mList)
+                et_location.setAdapter(mAdapter)
+                mAdapter.notifyDataSetChanged()
+            }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -145,6 +185,7 @@ class PostEditorActivity : AppCompatActivity() {
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.getItemId()) {
             R.id.button_save_file -> {
