@@ -11,8 +11,8 @@ import android.webkit.WebView
 import android.widget.TextView
 import java.io.File
 import android.webkit.WebViewClient
-
-
+import kotlinx.android.synthetic.main.news_item_row.view.*
+import org.jsoup.Jsoup
 
 
 class ArticleActivity : AppCompatActivity() {
@@ -21,8 +21,12 @@ class ArticleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_view)
         setSupportActionBar(toolbar)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        uv_btn.setOnClickListener { view ->
+            Snackbar.make(view, "Upvote", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
+        dv_btn.setOnClickListener { view ->
+            Snackbar.make(view, "Downvote", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
@@ -30,14 +34,20 @@ class ArticleActivity : AppCompatActivity() {
         if (extras != null) {
             // Load metadata
             val file = extras.get("file") as File
-            val bufferedReader = file.bufferedReader()
-            val list : List<String> = bufferedReader
-                .useLines { lines: Sequence<String> ->
-                    lines
-                        .take(6)
-                        .toList()
+
+            val doc = Jsoup.parse(file, null)
+            val metaTags = doc.getElementsByTag("meta")
+            for (metaTag in metaTags) {
+                val name = metaTag.attr("name")
+                val content = metaTag.attr("content")
+
+                when(name){
+                    "title" -> toolbar_layout.title = content
+//                    "subtitle" -> view.item_news_subtitle.text = content
+//                    "timestamp" -> view.item_news_date.text = content
                 }
-            toolbar_layout.title = list[0]
+            }
+
             // Display file
             val textBox = findViewById<WebView>(R.id.news_Body)
             textBox.webViewClient = WebViewClient()

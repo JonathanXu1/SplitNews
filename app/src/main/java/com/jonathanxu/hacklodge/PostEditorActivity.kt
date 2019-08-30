@@ -141,7 +141,7 @@ class PostEditorActivity : AppCompatActivity() {
                     val locationName = location.get("display_name").toString()
                     val lat = location.get("lat").toString()
                     val lon = location.get("lon").toString()
-                    Log.d(TAG, locationName)
+                    //Log.d(TAG, locationName)
                     mList.add(locationName)
                 }
                 Log.d(TAG, "Data set changed, now has ${mList.size} items")
@@ -171,7 +171,6 @@ class PostEditorActivity : AppCompatActivity() {
 
         // Save the post by writing to file
         Log.d(TAG, "Writing file to private storage")
-        Log.d(TAG, timestamp)
         val file = File(filesDir, "$fileName.html")
         // Write the file
         /*
@@ -179,8 +178,16 @@ class PostEditorActivity : AppCompatActivity() {
                 " timestamp='$timestamp'+ </meta>"
         val output = content.substringBefore("<head>") + "<head>" + metadata + content.substringAfter("<head>")
          */
-        file.writeText(title + "\n" + author + "\n" + subtitle  + "\n" + location  + "\n" +
-        timestamp + "\n" + content)
+        file.appendText("<meta name=\"title\" content=\"$title\"/> \n")
+        file.appendText("<meta name=\"author\" content=\"$author\"/> \n")
+        file.appendText("<meta name=\"subtitle\" content=\"$subtitle\"/> \n")
+        file.appendText("<meta name=\"location\" content=\"$location\"/> \n")
+        file.appendText("<meta name=\"timestamp\" content=\"$timestamp\"/> \n")
+        file.appendText(content)
+
+        /*file.writeText(title + "\n" + author + "\n" + subtitle  + "\n" + location  + "\n" +
+        timestamp + "\n" + content)*/
+
         // Notify the user the file was saved
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "File saved to ${file.absolutePath}")

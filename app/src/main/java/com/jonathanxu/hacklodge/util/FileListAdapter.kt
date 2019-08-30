@@ -9,6 +9,7 @@ import com.jonathanxu.hacklodge.ArticleActivity
 import com.jonathanxu.hacklodge.MainActivity
 import com.jonathanxu.hacklodge.R
 import kotlinx.android.synthetic.main.news_item_row.view.*
+import org.jsoup.Jsoup
 import java.io.File
 
 
@@ -39,19 +40,21 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
 
         fun bindFile(file: File) {
             this.file = file
-            /*
-            val doc = Jsoup.parse(file.absolutePath)
+
+            val doc = Jsoup.parse(file, null)
             val metaTags = doc.getElementsByTag("meta")
             for (metaTag in metaTags) {
-                var author = metaTag.attr("author")
-                var subtitle = metaTag.attr("subtitle")
-                var location = metaTag.attr("location")
-                var timestamp  = metaTag.attr("timestamp")
-                view.item_news_title.text = metaTag.attr("title")
-                break
+                val name = metaTag.attr("name")
+                val content = metaTag.attr("content")
+
+                when(name){
+                    "title" -> view.item_news_title.text = content
+                    "subtitle" -> view.item_news_subtitle.text = content
+                    "timestamp" -> view.item_news_date.text = content
+                }
             }
-            */
-            val bufferedReader = file.bufferedReader()
+
+/*            val bufferedReader = file.bufferedReader()
             val list : List<String> = bufferedReader
                 .useLines { lines: Sequence<String> ->
                     lines
@@ -61,7 +64,7 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
             Log.d(TAG, list.toString())
             view.item_news_title.text = list[0]
             view.item_news_subtitle.text = list[2]
-            view.item_news_date.text = list[4]
+            view.item_news_date.text = list[4]*/
         }
 
         override fun onClick(view: View) {
