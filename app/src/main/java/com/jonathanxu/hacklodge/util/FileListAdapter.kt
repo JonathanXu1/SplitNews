@@ -1,9 +1,12 @@
 package com.jonathanxu.hacklodge.util
 
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jonathanxu.hacklodge.ArticleActivity
+import com.jonathanxu.hacklodge.MainActivity
 import com.jonathanxu.hacklodge.R
 import kotlinx.android.synthetic.main.news_item_row.view.*
 import java.io.File
@@ -63,8 +66,10 @@ class FileListAdapter(private val files: Array<File>) : RecyclerView.Adapter<Fil
 
         override fun onClick(view: View) {
             Log.d(TAG, "File ${file.name} selected")
-            // Todo Start new intent to read the file
-            // itemView.context.startActivity(readFileIntent)
+            val context = view.context
+            val intent = Intent(context,  ArticleActivity::class.java)
+            intent.putExtra("file", file)
+            context.startActivity(intent)
         }
 
 

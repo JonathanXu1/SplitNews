@@ -28,6 +28,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup, GoogleAppIndexingWarning">
         <activity
+            android:name=".ArticleActivity"
+            android:label="@string/title_activity_article_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
