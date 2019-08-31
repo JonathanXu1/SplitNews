@@ -1,4 +1,4 @@
-package com.jonathanxu.hacklodge.util
+package com.jonathanxu.hacklodge.util.Adapters
 
 import android.net.wifi.p2p.WifiP2pDevice
 import android.util.Log
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jonathanxu.hacklodge.R
+import com.jonathanxu.hacklodge.util.inflate
 import kotlinx.android.synthetic.main.device_item.view.*
 
 class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :

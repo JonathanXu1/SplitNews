@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
-import com.jonathanxu.hacklodge.util.FileListAdapter
+import com.jonathanxu.hacklodge.util.Adapters.FileListAdapter
 import kotlinx.android.synthetic.main.fragment_feed.*
 import java.io.File
 

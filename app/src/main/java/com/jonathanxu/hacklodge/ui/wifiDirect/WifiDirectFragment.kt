@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.wifi.WpsInfo
+import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
@@ -24,7 +26,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
-import com.jonathanxu.hacklodge.util.DeviceListAdapter
+import com.jonathanxu.hacklodge.util.Adapters.DeviceListAdapter
+import com.jonathanxu.hacklodge.util.InputAsyncTask
 import com.jonathanxu.hacklodge.util.WifiDirectBroadcastReceiver
 import kotlinx.android.synthetic.main.fragment_wifi_direct.*
 
@@ -38,7 +41,7 @@ class WifiDirectFragment : Fragment() {
     private lateinit var channel: WifiP2pManager.Channel
     private lateinit var manager: WifiP2pManager
     var isWifiP2pEnabled = false
-    private val PORT = 42069
+    private val port = 42069
 
     // For the RecyclerView
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -61,15 +64,18 @@ class WifiDirectFragment : Fragment() {
             deviceListAdapter.notifyDataSetChanged()
             Log.d(TAG, "Peer list changed. Found ${peers.size} peers")
 
-//            for (device in peers) {
-//                val config = WifiP2pConfig().apply {
-//                    deviceAddress = device.deviceAddress
-//                    wps.setup = WpsInfo.PBC
-//                }
-//
+            for (device in peers) {
+                val config = WifiP2pConfig().apply {
+                    deviceAddress = device.deviceAddress
+                    wps.setup = WpsInfo.PBC
+                }
+
 //                manager.connect(channel, config, object : WifiP2pManager.ActionListener {
 //                    override fun onSuccess() {
 //                        Log.d(TAG,"Successfully connected to ${device.deviceName}")
+//                        val deviceAddr = device.deviceAddress
+//                        Log.d(TAG, "Device address is $deviceAddr")
+//                        DeviceOutputSocket(deviceAddr).execute()
 //                    }
 //
 //                    override fun onFailure(reasonCode: Int) {
@@ -77,7 +83,7 @@ class WifiDirectFragment : Fragment() {
 //                    }
 //
 //                })
-//            }
+            }
 
             // Perform any other updates needed based on the new list of
             // peers connected to the Wi-Fi P2P network.
@@ -181,7 +187,7 @@ class WifiDirectFragment : Fragment() {
         view.isEnabled = false
 
         val record: Map<String, String> = mapOf(
-            "listenport" to PORT.toString(),
+            "listenport" to port.toString(),
             "buddyname" to "idk what this is lmao", // todo figure out
             "available" to "visible"
         )
@@ -202,6 +208,9 @@ class WifiDirectFragment : Fragment() {
             }
 
         })
+
+        InputAsyncTask().execute()
+
     }
 
     private fun startPeerDiscovery(view: View) {

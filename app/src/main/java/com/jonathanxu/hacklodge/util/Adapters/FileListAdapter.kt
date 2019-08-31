@@ -1,4 +1,4 @@
-package com.jonathanxu.hacklodge.util
+package com.jonathanxu.hacklodge.util.Adapters
 
 import android.content.Intent
 import android.util.Log
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jonathanxu.hacklodge.ArticleActivity
-import com.jonathanxu.hacklodge.MainActivity
 import com.jonathanxu.hacklodge.R
+import com.jonathanxu.hacklodge.util.inflate
 import kotlinx.android.synthetic.main.news_item_row.view.*
 import org.jsoup.Jsoup
 import java.io.File
