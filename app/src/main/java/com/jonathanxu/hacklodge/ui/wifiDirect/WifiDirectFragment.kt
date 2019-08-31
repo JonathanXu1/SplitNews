@@ -27,7 +27,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
 import com.jonathanxu.hacklodge.util.Adapters.DeviceListAdapter
-import com.jonathanxu.hacklodge.util.DeviceOutputSocket
 import com.jonathanxu.hacklodge.util.InputAsyncTask
 import com.jonathanxu.hacklodge.util.WifiDirectBroadcastReceiver
 import kotlinx.android.synthetic.main.fragment_wifi_direct.*
@@ -78,21 +77,7 @@ class WifiDirectFragment : Fragment() {
                         deviceAddress = device.deviceAddress
                         wps.setup = WpsInfo.PBC
                     }
-                    manager.connect(channel, config, object : WifiP2pManager.ActionListener {
-                        override fun onSuccess() {
-                            Log.d(TAG, "Successfully connected to ${device.deviceName}")
-                            val deviceAddr = device.deviceAddress
-                            Log.d(TAG, "Device address is $deviceAddr")
-                            DeviceOutputSocket(deviceAddr).execute()
-                        }
 
-                        override fun onFailure(reasonCode: Int) {
-                            Log.d(
-                                TAG,
-                                "Failed to connect to ${device.deviceName} with code $reasonCode"
-                            )
-                        }
-                    })
                 }
             }
 
@@ -166,7 +151,7 @@ class WifiDirectFragment : Fragment() {
 
         linearLayoutManager = LinearLayoutManager(this.context)
         device_list.layoutManager = linearLayoutManager
-        deviceListAdapter = DeviceListAdapter(peers)
+        deviceListAdapter = DeviceListAdapter(peers, channel, manager)
         device_list.adapter = deviceListAdapter
 
         button_direct_scan.text = getString(R.string.scan_direct)
@@ -246,6 +231,7 @@ class WifiDirectFragment : Fragment() {
             }
             if (record["buddyname"].equals("com.jonathanxu.hacklodge")) {
                 serviceDevices.add(device)
+                peers.add(device)
                 deviceListAdapter.notifyDataSetChanged()
             }
         }
