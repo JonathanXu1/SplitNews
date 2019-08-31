@@ -306,13 +306,18 @@ class WifiDirectFragment : Fragment() {
                             Log.d(TAG, "P2P isn't supported on this device.")
 
                             // Alert the user that something went wrong.
-                            Toast.makeText(context, "P2P isn't supported on this device", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "P2P isn't supported on this device",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             view.text = getString(R.string.broadcast_direct)
                             view.isEnabled = true
                         }
                         else -> {
                             // Alert the user that something went wrong.
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                .show()
                             view.text = getString(R.string.broadcast_direct)
                             view.isEnabled = true
                         }
@@ -320,9 +325,5 @@ class WifiDirectFragment : Fragment() {
                 }
             }
         )
-
-
     }
-
-
 }
