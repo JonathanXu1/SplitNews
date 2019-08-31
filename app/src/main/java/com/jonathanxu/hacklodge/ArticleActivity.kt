@@ -7,12 +7,16 @@ import kotlinx.android.synthetic.main.activity_article_view.*
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.util.Log
 import android.webkit.WebView
 import android.widget.TextView
 import java.io.File
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.news_item_row.view.*
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 
 class ArticleActivity : AppCompatActivity() {
@@ -21,22 +25,14 @@ class ArticleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article_view)
         setSupportActionBar(toolbar)
-        // Fabs
-        uv_btn.setOnClickListener { view ->
-            Snackbar.make(view, "Upvote", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-        dv_btn.setOnClickListener { view ->
-            Snackbar.make(view, "Downvote", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         val extras = intent.extras
+        lateinit var doc : Document
         if (extras != null) {
             // Load metadata
             val file = extras.get("file") as File
 
-            val doc = Jsoup.parse(file, null)
+            doc = Jsoup.parse(file, null)
             val metaTags = doc.getElementsByTag("meta")
             for (metaTag in metaTags) {
                 val name = metaTag.attr("name")
@@ -48,6 +44,18 @@ class ArticleActivity : AppCompatActivity() {
                     "timestamp" -> news_time.text = content
                     "author" -> news_author.text = content
                     "location" -> news_location.text = content
+                    "userVote" -> {
+                        when(content){
+                            "-1" -> {
+                                dv_btn.tag = "on"
+                                dv_btn.backgroundTintList = this.resources.getColorStateList(R.color.colorAccent)
+                            }
+                            "1" -> {
+                                uv_btn.tag = "on"
+                                uv_btn.backgroundTintList = this.resources.getColorStateList(R.color.colorAccent)
+                            }
+                        }
+                    }
                 }
             }
 
@@ -55,6 +63,53 @@ class ArticleActivity : AppCompatActivity() {
             val textBox = findViewById<WebView>(R.id.news_Body)
             textBox.webViewClient = WebViewClient()
             textBox.loadUrl("file:///" + file.absolutePath)
+        }
+
+        // Fab listeners
+
+        uv_btn.setOnClickListener { view ->
+            // Click, but already selected
+            if(uv_btn.tag.toString().trim() == "on"){
+                uv_btn.tag = "off"
+                uv_btn.backgroundTintList = this.resources.getColorStateList(R.color.fabOff)
+                Toast.makeText(this, "Removed vote", Toast.LENGTH_SHORT).show()
+                // Down 1 point
+                doc.select("meta[content=userVote]").attr("content", "0")
+
+            } else {
+                uv_btn.tag = "on"
+                dv_btn.tag = "off"
+                Toast.makeText(this, "Upvoted!", Toast.LENGTH_SHORT).show()
+                uv_btn.backgroundTintList = this.resources.getColorStateList(R.color.colorAccent)
+                dv_btn.backgroundTintList = this.resources.getColorStateList(R.color.fabOff)
+                doc.select("meta[content=userVote]").attr("content", "1")
+                if(dv_btn.tag.toString().trim() == "on"){
+                    // Up 2 points
+                } else {
+                    // Up 1 point
+                }
+            }
+        }
+        dv_btn.setOnClickListener { view ->
+            if(dv_btn.tag.toString().trim() == "on"){
+                dv_btn.tag = "off"
+                dv_btn.backgroundTintList = this.resources.getColorStateList(R.color.fabOff)
+                Toast.makeText(this, "Removed vote", Toast.LENGTH_SHORT).show()
+                // Up 1 point
+                doc.select("meta[content=userVote]").attr("content", "0")
+            } else {
+                dv_btn.tag = "on"
+                uv_btn.tag = "off"
+                Toast.makeText(this, "Downvoted!", Toast.LENGTH_SHORT).show()
+                dv_btn.backgroundTintList = this.resources.getColorStateList(R.color.colorAccent)
+                uv_btn.backgroundTintList = this.resources.getColorStateList(R.color.fabOff)
+                doc.select("meta[content=userVote]").attr("content", "-1")
+                if(uv_btn.tag.toString().trim() == "on"){
+                    // Down 2 points
+                } else {
+                    // Down 1 point
+                }
+            }
         }
 
     }

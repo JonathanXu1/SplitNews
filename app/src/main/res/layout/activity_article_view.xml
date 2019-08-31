@@ -112,19 +112,22 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/dv_btn"
+        android:tag="off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="#888888"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_arrow_downward"
-        />
+        app:srcCompat="@drawable/ic_arrow_downward" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/uv_btn"
+        android:tag="off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
+        app:backgroundTint="#888888"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_arrow_upward" />

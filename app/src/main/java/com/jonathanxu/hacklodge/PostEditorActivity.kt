@@ -75,7 +75,6 @@ class PostEditorActivity : AppCompatActivity() {
         rtManager.registerEditor(rtEditText, true)
         Log.d(TAG, "Initialized rtEditor")
         //rtEditText.setRichTextEditing(true, message)
-        //Todo: Add back button
 
         // Location search dropdown
 
@@ -116,7 +115,6 @@ class PostEditorActivity : AppCompatActivity() {
             }
 
         })
-
     }
 
     fun getLocationList(locationInput:String) {
@@ -157,10 +155,9 @@ class PostEditorActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun savePost() {
-        // Todo: Support more data fields
         // Get the data from the editor
         val title = et_title.text.toString().trim()
-        val author = "placeholder"
+        val author = "Jon Doe"
         val subtitle = et_subtitle.text.toString().trim()
         val location = et_location.text.toString().trim()
         val timestamp = DateTimeFormatter
@@ -183,7 +180,10 @@ class PostEditorActivity : AppCompatActivity() {
         file.appendText("<meta name=\"subtitle\" content=\"$subtitle\"/> \n")
         file.appendText("<meta name=\"location\" content=\"$location\"/> \n")
         file.appendText("<meta name=\"timestamp\" content=\"$timestamp\"/> \n")
-        file.appendText(content)
+        file.appendText("<meta name=\"votes\" content=\"0\"/> \n")
+        file.appendText("<meta name=\"userVote\" content=\"0\"/> \n")
+        file.appendText("$content \n")
+        file.appendText("<style>img{display: inline; height: auto; max-width: 100%;}</style>")
 
         /*file.writeText(title + "\n" + author + "\n" + subtitle  + "\n" + location  + "\n" +
         timestamp + "\n" + content)*/
