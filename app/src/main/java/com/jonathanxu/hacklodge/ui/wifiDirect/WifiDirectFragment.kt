@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jonathanxu.hacklodge.R
 import com.jonathanxu.hacklodge.util.Adapters.DeviceListAdapter
+import com.jonathanxu.hacklodge.util.DeviceOutputSocket
 import com.jonathanxu.hacklodge.util.InputAsyncTask
 import com.jonathanxu.hacklodge.util.WifiDirectBroadcastReceiver
 import kotlinx.android.synthetic.main.fragment_wifi_direct.*
@@ -50,13 +51,20 @@ class WifiDirectFragment : Fragment() {
     private lateinit var receiver: WifiDirectBroadcastReceiver
 
     private val buddies = mutableMapOf<String, String>()
+    private val serviceDevices = mutableListOf<WifiP2pDevice>()
 
     private val peers = mutableListOf<WifiP2pDevice>()
     private val peerListListener = WifiP2pManager.PeerListListener { peerList ->
         val refreshedPeers = peerList.deviceList
         if (refreshedPeers != peers) {
             peers.clear()
-            peers.addAll(refreshedPeers)
+
+            for (device in refreshedPeers) {
+                if (device in serviceDevices) {
+                    Log.d(TAG, "${device.deviceName} is part of this service")
+                    peers.add(device)
+                }
+            }
 
             // If an AdapterView is backed by this data, notify it
             // of the change. For instance, if you have a ListView of
@@ -65,24 +73,27 @@ class WifiDirectFragment : Fragment() {
             Log.d(TAG, "Peer list changed. Found ${peers.size} peers")
 
             for (device in peers) {
-                val config = WifiP2pConfig().apply {
-                    deviceAddress = device.deviceAddress
-                    wps.setup = WpsInfo.PBC
-                }
+                if (device in serviceDevices) {
+                    val config = WifiP2pConfig().apply {
+                        deviceAddress = device.deviceAddress
+                        wps.setup = WpsInfo.PBC
+                    }
+                    manager.connect(channel, config, object : WifiP2pManager.ActionListener {
+                        override fun onSuccess() {
+                            Log.d(TAG, "Successfully connected to ${device.deviceName}")
+                            val deviceAddr = device.deviceAddress
+                            Log.d(TAG, "Device address is $deviceAddr")
+                            DeviceOutputSocket(deviceAddr).execute()
+                        }
 
-//                manager.connect(channel, config, object : WifiP2pManager.ActionListener {
-//                    override fun onSuccess() {
-//                        Log.d(TAG,"Successfully connected to ${device.deviceName}")
-//                        val deviceAddr = device.deviceAddress
-//                        Log.d(TAG, "Device address is $deviceAddr")
-//                        DeviceOutputSocket(deviceAddr).execute()
-//                    }
-//
-//                    override fun onFailure(reasonCode: Int) {
-//                        Log.d(TAG, "Failed to connect to ${device.deviceName} with code $reasonCode")
-//                    }
-//
-//                })
+                        override fun onFailure(reasonCode: Int) {
+                            Log.d(
+                                TAG,
+                                "Failed to connect to ${device.deviceName} with code $reasonCode"
+                            )
+                        }
+                    })
+                }
             }
 
             // Perform any other updates needed based on the new list of
@@ -160,7 +171,7 @@ class WifiDirectFragment : Fragment() {
 
         button_direct_scan.text = getString(R.string.scan_direct)
         // button_direct_scan.setOnClickListener { clickedView -> startPeerDiscovery(clickedView) }
-        button_direct_scan.setOnClickListener { clickedView -> discoverService(clickedView) }
+        button_direct_scan.setOnClickListener { clickedView -> discoverServices(clickedView) }
 
         button_direct_broadcast.text = getString(R.string.broadcast_direct)
         button_direct_broadcast.setOnClickListener { clickedView ->
@@ -188,10 +199,14 @@ class WifiDirectFragment : Fragment() {
 
         val record: Map<String, String> = mapOf(
             "listenport" to port.toString(),
-            "buddyname" to "idk what this is lmao", // todo figure out
+            "buddyname" to "com.jonathanxu.hacklodge", // todo figure out
             "available" to "visible"
         )
-        val serviceInfo = WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record)
+        val serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(
+            "com.jonathanxu.hacklodge",
+            "_presence._tcp",
+            record
+        )
 
         manager.addLocalService(channel, serviceInfo, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
@@ -213,37 +228,7 @@ class WifiDirectFragment : Fragment() {
 
     }
 
-    private fun startPeerDiscovery(view: View) {
-
-        // Disable the button
-        (view as Button).text = getString(R.string.scan_progress)
-        view.isEnabled = false
-
-        // Start service discovery
-        manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
-
-            override fun onSuccess() {
-                // Code for when the discovery initiation is successful goes here.
-                // No services have actually been discovered yet, so this method
-                // can often be left blank. Code for peer discovery goes in the
-                // onReceive method, detailed below.
-                Log.d(TAG, "Peer discovery successfully initiated")
-            }
-
-            override fun onFailure(reasonCode: Int) {
-                // Code for when the discovery initiation fails goes here.
-                Log.d(TAG, "Peer discovery failed with error code $reasonCode")
-
-                // Alert the user that something went wrong.
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                view.text = getString(R.string.scan_direct)
-                view.isEnabled = true
-            }
-        })
-
-    }
-
-    private fun discoverService(view: View) {
+    private fun discoverServices(view: View) {
 
         // Disable the button
         (view as Button).text = getString(R.string.scan_progress)
@@ -255,9 +240,13 @@ class WifiDirectFragment : Fragment() {
          * device: The device running the advertised service.
          */
         val txtListener = WifiP2pManager.DnsSdTxtRecordListener { fullDomain, record, device ->
-            Log.d(TAG, "DnsSdTxtRecord available -$record")
+            Log.d(TAG, "DnsSdTxtRecord available - $record")
             record["buddyname"]?.also {
                 buddies[device.deviceAddress] = it
+            }
+            if (record["buddyname"].equals("com.jonathanxu.hacklodge")) {
+                serviceDevices.add(device)
+                deviceListAdapter.notifyDataSetChanged()
             }
         }
 
@@ -281,7 +270,8 @@ class WifiDirectFragment : Fragment() {
 
         manager.setDnsSdResponseListeners(channel, serviceListener, txtListener)
 
-        val serviceRequest = WifiP2pDnsSdServiceRequest.newInstance()
+        val serviceRequest =
+            WifiP2pDnsSdServiceRequest.newInstance("com.jonathanxu.hacklodge", "_presence._tcp")
         manager.addServiceRequest(
             channel,
             serviceRequest,

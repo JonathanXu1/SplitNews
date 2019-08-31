@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jonathanxu.hacklodge.R
+import com.jonathanxu.hacklodge.util.DeviceOutputSocket
 import com.jonathanxu.hacklodge.util.inflate
 import kotlinx.android.synthetic.main.device_item.view.*
 
@@ -52,6 +53,7 @@ class DeviceListAdapter(private val devices: MutableList<WifiP2pDevice>) :
 
         override fun onClick(clickedView: View?) {
             Log.d(TAG, "${clickedView?.device_name?.text} selected")
+            DeviceOutputSocket(device.deviceAddress).execute()
 //            val config = WifiP2pConfig().apply {
 //                deviceAddress = device.deviceAddress
 //                wps.setup = WpsInfo.PBC

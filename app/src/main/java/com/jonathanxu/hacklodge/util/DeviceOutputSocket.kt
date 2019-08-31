@@ -10,6 +10,10 @@ class DeviceOutputSocket(private var serverAddress: String) : AsyncTask<Void, Vo
     private val TAG = "DeviceOutputSocket"
     private val port = 42069
 
+    init {
+        Log.d(TAG, "New async task created")
+    }
+
     override fun doInBackground(vararg args: Void?): String? {
         val socket = Socket()
         socket.bind(null)
