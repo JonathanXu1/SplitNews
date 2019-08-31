@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -44,6 +45,8 @@ class WifiDirectFragment : Fragment() {
     private lateinit var deviceListAdapter: DeviceListAdapter
 
     private lateinit var receiver: WifiDirectBroadcastReceiver
+
+    private val buddies = mutableMapOf<String, String>()
 
     private val peers = mutableListOf<WifiP2pDevice>()
     private val peerListListener = WifiP2pManager.PeerListListener { peerList ->
@@ -150,7 +153,8 @@ class WifiDirectFragment : Fragment() {
         device_list.adapter = deviceListAdapter
 
         button_direct_scan.text = getString(R.string.scan_direct)
-        button_direct_scan.setOnClickListener { clickedView -> startPeerDiscovery(clickedView) }
+        // button_direct_scan.setOnClickListener { clickedView -> startPeerDiscovery(clickedView) }
+        button_direct_scan.setOnClickListener { clickedView -> discoverService(clickedView) }
 
         button_direct_broadcast.text = getString(R.string.broadcast_direct)
         button_direct_broadcast.setOnClickListener { clickedView ->
@@ -229,5 +233,96 @@ class WifiDirectFragment : Fragment() {
         })
 
     }
+
+    private fun discoverService(view: View) {
+
+        // Disable the button
+        (view as Button).text = getString(R.string.scan_progress)
+        view.isEnabled = false
+
+        /* Callback includes:
+         * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
+         * record: TXT record dta as a map of key/value pairs.
+         * device: The device running the advertised service.
+         */
+        val txtListener = WifiP2pManager.DnsSdTxtRecordListener { fullDomain, record, device ->
+            Log.d(TAG, "DnsSdTxtRecord available -$record")
+            record["buddyname"]?.also {
+                buddies[device.deviceAddress] = it
+            }
+        }
+
+        val serviceListener =
+            WifiP2pManager.DnsSdServiceResponseListener { instanceName, registrationType, resourceType ->
+                // Update the device name with the human-friendly version from
+                // the DnsTxtRecord, assuming one arrived.
+                resourceType.deviceName =
+                    buddies[resourceType.deviceAddress] ?: resourceType.deviceName
+
+                // Add to the custom adapter defined specifically for showing
+                // wifi devices.
+//                val fragment = fragmentManager.findFragmentById(R.id.frag_peerlist) as WiFiDirectServicesList
+//                (fragment.listAdapter as WiFiDevicesAdapter).apply {
+//                    add(resourceType)
+//                    notifyDataSetChanged()
+//                }
+
+                Log.d(TAG, "onBonjourServiceAvailable $instanceName")
+            }
+
+        manager.setDnsSdResponseListeners(channel, serviceListener, txtListener)
+
+        val serviceRequest = WifiP2pDnsSdServiceRequest.newInstance()
+        manager.addServiceRequest(
+            channel,
+            serviceRequest,
+            object : WifiP2pManager.ActionListener {
+                override fun onSuccess() {
+                    Log.d(TAG, "Successfully added service request. What does it mean? No idea.")
+                }
+
+                override fun onFailure(code: Int) {
+                    Log.d(TAG, "Failed to add service request with error code $code")
+
+                    // Alert the user that something went wrong.
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    view.text = getString(R.string.broadcast_direct)
+                    view.isEnabled = true
+                }
+            }
+        )
+
+        manager.discoverServices(
+            channel,
+            object : WifiP2pManager.ActionListener {
+                override fun onSuccess() {
+                    Log.d(TAG, "Successfully began service discovery")
+                }
+
+                override fun onFailure(code: Int) {
+                    // Command failed. Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                    when (code) {
+                        WifiP2pManager.P2P_UNSUPPORTED -> {
+                            Log.d(TAG, "P2P isn't supported on this device.")
+
+                            // Alert the user that something went wrong.
+                            Toast.makeText(context, "P2P isn't supported on this device", Toast.LENGTH_SHORT).show()
+                            view.text = getString(R.string.broadcast_direct)
+                            view.isEnabled = true
+                        }
+                        else -> {
+                            // Alert the user that something went wrong.
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            view.text = getString(R.string.broadcast_direct)
+                            view.isEnabled = true
+                        }
+                    }
+                }
+            }
+        )
+
+
+    }
+
 
 }

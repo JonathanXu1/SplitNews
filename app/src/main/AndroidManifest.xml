@@ -30,7 +30,7 @@
         <activity
             android:name=".ArticleActivity"
             android:label="@string/title_activity_article_view"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
