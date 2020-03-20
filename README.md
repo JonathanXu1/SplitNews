@@ -32,6 +32,6 @@ Currently WIP. Searches for and display nearby clients for connecting.
 - Somewhat functional WiFi direct connection (didn't get to sharing files in time)
 ## TODOS:
 - Finalize peer to peer file transfer
-- Set up [IPFS]{https://docs.ipfs.io/} on Android
-  -[Promising option]{https://github.com/ligi/ipfs-api-kotlin}
+- Set up [IPFS](https://docs.ipfs.io/) on Android
+  -[Promising option](https://github.com/ligi/ipfs-api-kotlin)
 - Come up with app icons and post the alpha build on google play
