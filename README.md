@@ -21,3 +21,4 @@ Currently WIP. The goal is for enable the user to set preferences related to net
 ## TODOS:
 - Finalize peer to peer file transfer
 - Set up [IPFS]{https://docs.ipfs.io/} on Android
+- Come up with app icons and post the alpha build on google play
