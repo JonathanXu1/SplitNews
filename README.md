@@ -33,4 +33,5 @@ Currently WIP. Searches for and display nearby clients for connecting.
 ## TODOS:
 - Finalize peer to peer file transfer
 - Set up [IPFS]{https://docs.ipfs.io/} on Android
+  -[Promising option]{https://github.com/ligi/ipfs-api-kotlin}
 - Come up with app icons and post the alpha build on google play
